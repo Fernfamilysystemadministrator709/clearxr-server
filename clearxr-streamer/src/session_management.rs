@@ -403,6 +403,16 @@ async fn handle_connection(
                     );
                     spawn_default_app_launch_if_enabled(app_state.clone(), runtime_state.clone());
                 } else if status.status == SESSION_STATUS_DISCONNECTED {
+                    // Kill any clear-xr process we spawned — the runtime it was
+                    // connected to is being torn down.
+                    {
+                        let mut rs = runtime_state.lock().await;
+                        if let Some(mut process) = rs.clearxr_process.take() {
+                            let _ = process.kill();
+                            info!("Killed clear-xr process after session disconnect");
+                        }
+                    }
+
                     if let Some(cloudxr) = app_state.cloudxr().await {
                         info!(
                             "Stopping CloudXR presentation for session {} after DISCONNECTED",
@@ -535,24 +545,10 @@ fn spawn_default_app_launch_if_enabled(
 
         sleep(Duration::from_secs(settings.clearxr_launch_delay_seconds)).await;
 
-        let Some(cloudxr) = app_state.cloudxr().await else {
+        let Some(_cloudxr) = app_state.cloudxr().await else {
             warn!("Skipping clear-xr launch because CloudXR is unavailable.");
             return;
         };
-
-        match cloudxr.query_status_once().await {
-            Ok(status) if status.game_is_connected => {
-                info!("Skipping clear-xr launch because an OpenXR app is already connected.");
-                return;
-            }
-            Ok(_) => {}
-            Err(error) => {
-                warn!(
-                    "Skipping clear-xr launch because CloudXR status could not be queried: {error}"
-                );
-                return;
-            }
-        }
 
         let mut runtime_state = runtime_state.lock().await;
         if let Some(process) = runtime_state.clearxr_process.as_mut() {

@@ -15,6 +15,8 @@ pub struct ClearXRSettings {
     pub launch_default_app: bool,
     pub clearxr_exe_path: String,
     pub clearxr_launch_delay_seconds: u64,
+    #[serde(default)]
+    pub foveation_visualization: bool,
 }
 
 impl Default for ClearXRSettings {
@@ -23,6 +25,7 @@ impl Default for ClearXRSettings {
             launch_default_app: true,
             clearxr_exe_path: DEFAULT_CLEARXR_EXE_PATH.to_string(),
             clearxr_launch_delay_seconds: DEFAULT_LAUNCH_DELAY_SECONDS,
+            foveation_visualization: false,
         }
     }
 }

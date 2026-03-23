@@ -225,11 +225,17 @@ pub fn run(keep_running: Arc<AtomicBool>) -> Result<()> {
             xr::Binding::new(&y_click_action, xr_instance.string_to_path("/user/hand/left/input/y/click")?),
             // Menu
             xr::Binding::new(&menu_click_action, xr_instance.string_to_path("/user/hand/left/input/menu/click")?),
+            xr::Binding::new(&menu_click_action, xr_instance.string_to_path("/user/hand/right/input/menu/click")?),
+            
             // Haptic output
             xr::Binding::new(&haptic_action, xr_instance.string_to_path("/user/hand/left/output/haptic")?),
             xr::Binding::new(&haptic_action, xr_instance.string_to_path("/user/hand/right/output/haptic")?),
-            // Trigger/thumbstick touch (squeeze/touch does NOT exist in the Oculus Touch profile —
+            // Grip/Trigger/thumbstick touch (squeeze/touch does NOT exist in the Oculus Touch profile —
             // squeeze touch data comes from the opaque data channel instead)
+
+            xr::Binding::new(&squeeze_touch_action, xr_instance.string_to_path("/user/hand/left/input/squeeze/touch")?),
+            xr::Binding::new(&squeeze_touch_action, xr_instance.string_to_path("/user/hand/right/input/squeeze/touch")?),
+            
             xr::Binding::new(&trigger_touch_action, xr_instance.string_to_path("/user/hand/left/input/trigger/touch")?),
             xr::Binding::new(&trigger_touch_action, xr_instance.string_to_path("/user/hand/right/input/trigger/touch")?),
             xr::Binding::new(&thumbstick_touch_action, xr_instance.string_to_path("/user/hand/left/input/thumbstick/touch")?),

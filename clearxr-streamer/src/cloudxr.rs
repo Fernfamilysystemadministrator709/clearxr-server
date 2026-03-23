@@ -726,6 +726,12 @@ fn spawn_manager_process(paths: &CloudXrPaths, job_object: &ProcessJobObject) ->
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped());
 
+    if let Ok((settings, _)) = crate::settings::load_settings() {
+        if settings.foveation_visualization {
+            command.env("NV_CXR_ENABLE_FOVEATION_VISUALIZATION", "true");
+        }
+    }
+
     let mut child = command
         .spawn()
         .with_context(|| format!("failed to launch {}", paths.manager_exe.display()))?;

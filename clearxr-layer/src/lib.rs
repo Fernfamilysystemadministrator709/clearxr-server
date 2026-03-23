@@ -171,38 +171,30 @@ enum FloatSource {
 }
 
 /// Map component path suffix → boolean source for the opaque channel packet.
-/// Covers Oculus Touch, generic Khronos, and PSVR2 Sense interaction profiles.
+/// Only overrides inputs that CloudXR does NOT provide correctly:
+///   - All capacitive touch sensors
+///   - Thumbstick click
+///   - Menu click
+/// CloudXR already handles: trigger click/value, grip click/value, face button clicks.
 fn component_to_bool(component: &str) -> Option<BoolSource> {
     match component {
-        // ── Face buttons (A/B/X/Y and PSVR2 equivalents) ──
+        // ── Touch sensors (all missing from CloudXR) ──
         "/input/x/touch" | "/input/a/touch"
             | "/input/square/touch" | "/input/cross/touch"  => Some(BoolSource::Bit(SC_TOUCH_A)),
         "/input/y/touch" | "/input/b/touch"
             | "/input/triangle/touch" | "/input/circle/touch" => Some(BoolSource::Bit(SC_TOUCH_B)),
-        "/input/x/click" | "/input/a/click"
-            | "/input/square/click" | "/input/cross/click"  => Some(BoolSource::Bit(SC_BTN_A)),
-        "/input/y/click" | "/input/b/click"
-            | "/input/triangle/click" | "/input/circle/click" => Some(BoolSource::Bit(SC_BTN_B)),
-
-        // ── Trigger (touch is a bit, click is derived from analog >= 1.0) ──
         "/input/trigger/touch" | "/input/l2/touch" | "/input/r2/touch"
             => Some(BoolSource::Bit(SC_TOUCH_TRIGGER)),
-        "/input/trigger/click" | "/input/l2/click" | "/input/r2/click"
-            => Some(BoolSource::TriggerClick),
-
-        // ── Grip / squeeze (touch is a bit, click is derived from analog >= 1.0) ──
         "/input/grip/touch" | "/input/squeeze/touch"
             | "/input/l1/touch" | "/input/r1/touch"         => Some(BoolSource::Bit(SC_TOUCH_GRIP)),
-        "/input/grip/click" | "/input/squeeze/click"
-            | "/input/l1/click" | "/input/r1/click"         => Some(BoolSource::GripClick),
-
-        // ── Thumbstick / stick ──
         "/input/thumbstick/touch"
             | "/input/left_stick/touch" | "/input/right_stick/touch" => Some(BoolSource::Bit(SC_TOUCH_THUMBSTICK)),
+
+        // ── Thumbstick click (missing from CloudXR) ──
         "/input/thumbstick/click"
             | "/input/left_stick/click" | "/input/right_stick/click" => Some(BoolSource::Bit(SC_BTN_THUMBSTICK)),
 
-        // ── Menu / system ──
+        // ── Menu click (missing from CloudXR on right hand) ──
         "/input/menu/click"
             | "/input/create/click" | "/input/options/click" => Some(BoolSource::Bit(SC_BTN_MENU)),
 
@@ -211,18 +203,11 @@ fn component_to_bool(component: &str) -> Option<BoolSource> {
 }
 
 /// Map float/value component paths → the source for the float override.
+/// Only overrides inputs that CloudXR does NOT provide.
+/// CloudXR already handles trigger/value and grip/value correctly.
 fn component_to_float(component: &str) -> Option<FloatSource> {
     match component {
-        // Trigger analog → real f32 from packet
-        "/input/trigger/value" | "/input/l2/value" | "/input/r2/value"
-            => Some(FloatSource::Trigger),
-
-        // Grip / squeeze analog → real f32 from packet
-        "/input/grip/value" | "/input/squeeze/value"
-            | "/input/l1/value" | "/input/r1/value"
-            => Some(FloatSource::Grip),
-
-        // PSVR2 proximity sensors → derive from corresponding touch bit
+        // PSVR2 proximity sensors — not available through CloudXR
         "/input/l1_sensor/value" | "/input/r1_sensor/value"
             => Some(FloatSource::TouchBit(SC_TOUCH_GRIP)),
         "/input/l2_sensor/value" | "/input/r2_sensor/value"
@@ -775,12 +760,16 @@ unsafe extern "system" fn hook_suggest_bindings(
         None => return xr::Result::ERROR_HANDLE_INVALID,
     };
 
-    // Record the bindings so we know which actions to override later
+    // Record the bindings so we know which actions to override later.
+    // Bindings that the layer handles (touch sensors, thumbstick click, menu)
+    // are stripped before passing to the runtime — they may not exist in the
+    // interaction profile and would cause the entire batch to be rejected.
     let sb = &*suggested_bindings;
     let bindings = std::slice::from_raw_parts(sb.suggested_bindings, sb.count_suggested_bindings as usize);
 
+    let mut passthrough: Vec<xr::ActionSuggestedBinding> = Vec::with_capacity(bindings.len());
+
     for binding in bindings {
-        // Convert the XrPath to a string
         let mut buf = [0u8; 512];
         let mut len: u32 = 0;
         let r = (state.next.path_to_string)(
@@ -790,29 +779,36 @@ unsafe extern "system" fn hook_suggest_bindings(
             &mut len,
             buf.as_mut_ptr() as *mut c_char,
         );
-        if r != xr::Result::SUCCESS || len == 0 { continue; }
+        if r != xr::Result::SUCCESS || len == 0 {
+            passthrough.push(*binding);
+            continue;
+        }
 
         let path_str = match std::str::from_utf8(&buf[..len as usize - 1]) {
             Ok(s) => s,
-            Err(_) => continue,
+            Err(_) => { passthrough.push(*binding); continue; }
         };
+
+        let mut handled_by_layer = false;
 
         if let Some((hand, component)) = parse_binding_path(path_str) {
             let action_raw = binding.action.into_raw();
             if let Some(src) = component_to_bool(component) {
                 log::info!(
-                    "[ClearXR Layer] Recorded bool binding: action 0x{:x} {:?} {} → {:?}",
+                    "[ClearXR Layer] Recorded bool binding: action 0x{:x} {:?} {} → {:?} (stripped from runtime)",
                     action_raw, hand, path_str, src
                 );
                 state.overrides.insert((action_raw, hand), src);
+                handled_by_layer = true;
             }
 
             if let Some(src) = component_to_float(component) {
                 log::info!(
-                    "[ClearXR Layer] Recorded float binding: action 0x{:x} {:?} {} → {:?}",
+                    "[ClearXR Layer] Recorded float binding: action 0x{:x} {:?} {} → {:?} (stripped from runtime)",
                     action_raw, hand, path_str, src
                 );
                 state.float_overrides.insert((action_raw, hand), src);
+                handled_by_layer = true;
             }
 
             if is_haptic_output_path(component) {
@@ -826,10 +822,25 @@ unsafe extern "system" fn hook_suggest_bindings(
                 state.haptic_actions.insert((action_raw, hand));
             }
         }
+
+        if !handled_by_layer {
+            passthrough.push(*binding);
+        }
     }
 
-    // Pass through to next layer
-    (state.next.suggest_interaction_profile_bindings)(instance, suggested_bindings)
+    // Pass the filtered bindings to the runtime
+    let filtered_sb = xr::InteractionProfileSuggestedBinding {
+        ty: sb.ty,
+        next: sb.next,
+        interaction_profile: sb.interaction_profile,
+        count_suggested_bindings: passthrough.len() as u32,
+        suggested_bindings: passthrough.as_ptr(),
+    };
+    layer_log!(info,
+        "[ClearXR Layer] Passing {} of {} bindings to runtime ({} handled by layer)",
+        passthrough.len(), bindings.len(), bindings.len() - passthrough.len()
+    );
+    (state.next.suggest_interaction_profile_bindings)(instance, &filtered_sb)
 }
 
 unsafe extern "system" fn hook_sync_actions(

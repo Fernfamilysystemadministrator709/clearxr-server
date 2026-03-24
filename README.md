@@ -25,6 +25,7 @@ It may expand to other mobile devicdes (e.g. iOS and iPad), headsets (e.g. Quest
 - Windows 10/11 PC with NVIDIA 40xx (Ada), 50xx (Blackwell), or other Ada/Blackwell GPUs (L40, L40S, RTX 5000/6000 series and 5000/6000 pro).  
 - Note that NVIDIA only tests Cloud XR on 4090, 5080, and 5090 consumer GPUs.  The authors have also tested successfully on a 5070 Ti (RIP).  **Clear XR cannot run on NVIDIA 30xx (Ampere) cards.**  
 - Rust and its prerequisites, which include the Microsoft Visual Studio 2022 build tools. 
+- The LunarG Vulkan SDK for Windows. `clearxr-space` compiles its GLSL shaders with `glslc` during `cargo build`, so `glslc.exe` must be available on `PATH` or discoverable through the `VULKAN_SDK` environment variable.
 - NVIDIA Cloud XR and Stream Manager SDKs, described below.
 
 
@@ -60,9 +61,16 @@ Supporting files live alongside those components:
 
 ## How do I build this?
 1. Install Rust via the [Rustup install documentation](https://rust-lang.org/tools/install/)
-2. Download the NVIDIA Cloud XR dependencies, described below.
-3. Run the `scripts\build-vendor.ps1` vendor script.
-4. Build with `cargo`
+2. Install the [LunarG Vulkan SDK for Windows](https://vulkan.lunarg.com/sdk/home) and restart your shell so `glslc` is available on `PATH`.
+3. Verify the shader compiler is available:
+
+```powershell
+glslc --version
+```
+
+4. Download the NVIDIA Cloud XR dependencies, described below.
+5. Run the `scripts\build-vendor.ps1` vendor script.
+6. Build with `cargo`
 
 ## Downloading NVIDIA Cloud XR and assembling the vendor directory
 
@@ -101,6 +109,8 @@ Build the full project from the repository root with:
 ```powershell
 cargo xtask build
 ```
+
+If `cargo xtask build` fails with a message about `glslc`, install the Vulkan SDK, restart your shell, and verify `glslc --version` succeeds before retrying.
 
 For a release build:
 

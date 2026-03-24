@@ -8,7 +8,6 @@ Currently only OpenXR compliant applications are supported. OpenVR (and SteamVR)
 
 # For End Users
 
-Join the TestFlight!
 [![Clear XR](https://i.imgur.com/DHhfmmK.png)](https://testflight.apple.com/join/ed6778fF)
 
 # For Developers & Hackers

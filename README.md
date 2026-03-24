@@ -14,6 +14,8 @@ Download the client from Test Flight
 
 [![Clear XR](https://i.imgur.com/DHhfmmK.png)](https://testflight.apple.com/join/ed6778fF)
 
+discord aerver: https://discord.gg/AzZZXvBR8p
+
 # For Developers & Hackers
 
 Clear XR currently is built around a visionOS app, Windows desktop app, an OpenXR test application, and an OpenXR API layer, and Apple's FoveatedStreaming framework for visionOS.   

